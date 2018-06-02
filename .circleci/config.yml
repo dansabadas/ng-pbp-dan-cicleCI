@@ -18,6 +18,7 @@ jobs:
 
     steps:
       - checkout
+      - setup-remote-docker
 
       # Download and cache dependencies
       - restore_cache:
@@ -36,4 +37,14 @@ jobs:
       # run tests! angular-CLI will be installed and yarn will take care of that
       - run: yarn ng build --prod
       - run: yarn ng test --single-run
+
+      - run:
+          command: |
+            docker build -t danson.azurecr.io/hello:1.0 .
+      - run:
+          command: |
+            docker login --username $DOCKER_USER --password $DOCKER_PASSWORD danson.azurecr.io 
+      - run:
+          command: |
+            docker push danson.azurecr.io/hello:1.0 
 
